@@ -22,20 +22,92 @@ const images = [
 ];
 
 let image = document.getElementById("slider-img");
-let currentIndex = 0;
+let image2 = document.getElementById("slider-img2");
+let btnNextImg = document.getElementById("next-img");
+let btnNextImg2 = document.getElementById("next-img2");
+let btnPreviousImg = document.getElementById("previous-img");
+let btnPreviousImg2 = document.getElementById("previous-img2");
+let currentIndexSliderOne = 0;
+let currentIndexSliderTwo = 0;
 
-function autoPlaySlider() {
-    setInterval(function(){
+function updateImg(element, imgArray, index) {
+    element.classList.add("fade-out");
 
-        image.src = images[currentIndex].img;
-        image.alt = images[currentIndex].name;
-       
-        currentIndex++
-        if (currentIndex == images.length - 1) {
-            currentIndex = 0;
-        } 
-    }, 3000)
+    setTimeout(function() {
+        element.src = imgArray[index].img;
+        element.alt = imgArray[index].name;
+        element.classList.remove('fade-out');
+    }, 1000);
 }
 
+function createIndicators(sliderId, imgArray) {
+    const indicatorsContainer = document.getElementById(sliderId);
+    imgArray.forEach((index) => {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        if (index === 0) {
+            dot.classList.add("active");
+        }
+        indicatorsContainer.appendChild(dot);
+    });
+}
+
+function updateDotIndicators(sliderId, currentIndex) {
+    const dots = document.getElementById(sliderId).getElementsByClassName("dot");
+    for (let i = 0; i < dots.length; i++) {
+        dots[i].classList.remove("active");
+    }
+    dots[currentIndex].classList.add("active");
+}
+
+// Slider 1
+function autoPlaySlider() {
+    setInterval(function(){
+        currentIndexSliderOne++
+        if (currentIndexSliderOne == images.length - 1) {
+            currentIndexSliderOne = 0;
+        } 
+        updateImg(image, images, currentIndexSliderOne);
+    }, 4000)
+}
 
 autoPlaySlider();
+
+btnNextImg.addEventListener('click', function(){
+    currentIndexSliderOne++;
+    if (currentIndexSliderOne >= images.length - 1) {
+        currentIndexSliderOne = 0;
+    }
+    updateImg(image, images, currentIndexSliderOne);
+})
+
+btnPreviousImg.addEventListener('click', function(){
+    currentIndexSliderOne--;
+    if (currentIndexSliderOne < 0) {
+        currentIndexSliderOne = images.length - 1;
+    }
+    updateImg(image, images, currentIndexSliderOne);
+})
+
+// Slider 2
+
+createIndicators("dotForSlider2", images);
+updateDotIndicators("dotForSlider2", currentIndexSliderTwo)
+
+btnNextImg2.addEventListener('click', function(){
+    currentIndexSliderTwo++;
+    if (currentIndexSliderTwo >= images.length - 1) {
+        currentIndexSliderTwo = 0;
+    }
+    updateImg(image2, images, currentIndexSliderTwo);
+    updateDotIndicators("dotForSlider2", currentIndexSliderTwo);
+})
+
+btnPreviousImg2.addEventListener('click', function(){
+    currentIndexSliderTwo--;
+    if (currentIndexSliderTwo < 0) {
+        currentIndexSliderTwo = images.length - 1;
+    }
+    updateImg(image2, images, currentIndexSliderTwo);
+    updateDotIndicators("dotForSlider2", currentIndexSliderTwo);
+})
